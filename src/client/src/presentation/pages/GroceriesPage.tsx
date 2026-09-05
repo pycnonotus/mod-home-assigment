@@ -1,4 +1,4 @@
-import {Alert, Button, CircularProgress, Stack, TextField} from "@mui/material";
+import {Alert, Button, CircularProgress, Stack} from "@mui/material";
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../stores/hooks.ts';
@@ -8,6 +8,7 @@ import {useGroceriesCatalog} from "../../application/catalog/useGroceriesCatalog
 import {Cart} from "../components/Carts/Cart.tsx";
 import {GroceriesCategories} from "../components/Groceries/GroceriesCategories.tsx";
 import {GroceriesItems} from "../components/Groceries/GroceriesItems.tsx";
+import QunitiyInput from "../components/Groceries/QunitiyInput.tsx";
 
 export default function GroceriesPage() {
     const {
@@ -75,10 +76,9 @@ export default function GroceriesPage() {
                 )}
 
                 <Cart/>
-                <TextField label="כמות" type="number" value={quantity}
-                           onChange={event => setQuantity(event.target.value)} error={!validQuantity}
-                           helperText={!validQuantity ? 'הכמות הכוללת למוצר חייבת להיות בין 1 ל־999' : undefined}
-                           slotProps={{htmlInput: {min: 1, max: 999, step: 1}}}/>
+                <QunitiyInput value={quantity} onChange={event => setQuantity(event.target.value)}
+                              validQuantity={validQuantity}/>
+
                 <Button variant="contained" disabled={!product || !validQuantity || isLoading || isError} onClick={add}>
                     הוסף לעגלה
                 </Button>
