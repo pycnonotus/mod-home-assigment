@@ -1,5 +1,5 @@
 ﻿import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import type {GrocerieItem} from "../types/grocerieItem.ts";
+import type {GrocerieItem} from "../../types/grocerieItem.ts";
 
 
 type GroceryCatalog = Record<string, GrocerieItem>;
@@ -19,3 +19,4 @@ export const GroceriesApi = createApi({
         })
     })
 });
+
