@@ -65,6 +65,8 @@ export default function GroceriesPage() {
                             onSelect={selectCategory}
                             loading={isLoading}
                         />
+                        <QunitiyInput value={quantity} onChange={event => setQuantity(event.target.value)}
+                                      validQuantity={validQuantity}/>
                         <GroceriesItems
                             products={products}
                             selectedId={selectedProductId}
@@ -76,8 +78,7 @@ export default function GroceriesPage() {
                 )}
 
                 <Cart/>
-                <QunitiyInput value={quantity} onChange={event => setQuantity(event.target.value)}
-                              validQuantity={validQuantity}/>
+
 
                 <Button variant="contained" disabled={!product || !validQuantity || isLoading || isError} onClick={add}>
                     הוסף לעגלה
