@@ -1,7 +1,7 @@
-﻿import {GroceriesCategorise} from "../components/GroceriesCategorise.tsx";
-import {GroceriesItems} from "../components/GroceriesItems.tsx";
+﻿import {GroceriesCategorise} from "../components/Groceries/GroceriesCategorise.tsx";
+import {GroceriesItems} from "../components/Groceries/GroceriesItems.tsx";
 import {Button, Grid, Stack} from "@mui/material";
-import {Cart} from "../components/Cart.tsx";
+import {Cart} from "../components/Carts/Cart.tsx";
 
 export default function GroceriesPage() {
 
