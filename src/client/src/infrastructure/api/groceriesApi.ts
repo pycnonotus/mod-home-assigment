@@ -1,22 +1,15 @@
-﻿import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import type {GrocerieItem} from "../../types/grocerieItem.ts";
+import type {Catalog} from "../../domain/catalog";
+import {baseApi} from "./baseApi.ts";
+import type {CatalogResponseDto} from "./catalogContract.ts";
+import {toCatalog} from "./catalogMapper.ts";
 
-
-type GroceryCatalog = Record<string, GrocerieItem>;
-export const GroceriesApi = createApi({
-    reducerPath: "groceries",
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_API_BASE_URL,
-    }),
+export const GroceriesApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        getItems: builder.query<Record<string, GroceryCatalog>, void>({
-            query : () => "items",
-            transformResponse: (items: GroceryCatalog[]) => Object.fromEntries(
-
-                items.map((i) => [i])
-
-            )
-        })
-    })
+        getCatalog: builder.query<Catalog, void>({
+            query: () => "groceries",
+            transformResponse: (response: CatalogResponseDto) => toCatalog(response),
+        }),
+    }),
 });
 
+export const {useGetCatalogQuery} = GroceriesApi;

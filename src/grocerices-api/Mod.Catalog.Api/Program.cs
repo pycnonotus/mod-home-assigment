@@ -4,7 +4,7 @@ var app = builder.Build();
 
 
 
-app.MapGet("/", () => """
+app.MapGet("/groceries", () => """
                       [
                           {
                               "id": "83c05832-6e35-4463-8a63-8647282982e5",

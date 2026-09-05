@@ -1,6 +1,6 @@
 ﻿import {Button, Stack} from "@mui/material";
 import {Cart} from "../components/Carts/Cart.tsx";
-import {OrderSummaryForm} from "../components/OrderSummaryForm.tsx";
+import {OrderSummaryForm} from "../components/Order/OrderSummaryForm.tsx";
 
 export function OrderSummaryPage() {
     return (
