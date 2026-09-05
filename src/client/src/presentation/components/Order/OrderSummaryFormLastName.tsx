@@ -1,12 +1,8 @@
-﻿import {FormControl, Input, InputLabel} from "@mui/material";
+import {TextField} from '@mui/material';
 
-export function OrderSummaryFormLastName() {
-    return (
-        <FormControl fullWidth>
-            <InputLabel>
-                שם משפחה
-            </InputLabel>
-            <Input placeholder="ישראלי"/>
-        </FormControl>
-    );
+export function OrderSummaryFormLastName({value, onChange, disabled}: {
+    value: string; onChange: (value: string) => void; disabled?: boolean;
+}) {
+    return <TextField required fullWidth label="שם משפחה" type="text" autoComplete="family-name"
+                      value={value} onChange={event => onChange(event.target.value)} disabled={disabled}/>;
 }

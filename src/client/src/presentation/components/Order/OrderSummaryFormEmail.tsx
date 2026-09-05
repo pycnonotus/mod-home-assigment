@@ -1,12 +1,8 @@
-﻿import {FormControl, Input, InputLabel} from "@mui/material";
+import {TextField} from '@mui/material';
 
-export function OrderSummaryFormEmail() {
-    return (
-        <FormControl fullWidth>
-            <InputLabel>
-                כתובת מייל
-            </InputLabel>
-            <Input placeholder="exanple@mail.com"/>
-        </FormControl>
-    )
+export function OrderSummaryFormEmail({value, onChange, disabled}: {
+    value: string; onChange: (value: string) => void; disabled?: boolean;
+}) {
+    return <TextField required fullWidth label="כתובת מייל" type="email" autoComplete="email"
+                      value={value} onChange={event => onChange(event.target.value)} disabled={disabled}/>;
 }

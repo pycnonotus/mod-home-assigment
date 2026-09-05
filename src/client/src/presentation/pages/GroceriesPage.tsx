@@ -1,4 +1,9 @@
-import {Alert, Button, CircularProgress, Stack} from "@mui/material";
+import {Alert, Button, CircularProgress, Stack, TextField} from "@mui/material";
+import {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '../../stores/hooks.ts';
+import {addItem} from '../../application/order/cartSlice.ts';
+import {isValidQuantity} from '../../domain/order/cart.ts';
 import {useGroceriesCatalog} from "../../application/catalog/useGroceriesCatalog.ts";
 import {Cart} from "../components/Carts/Cart.tsx";
 import {GroceriesCategories} from "../components/Groceries/GroceriesCategories.tsx";
@@ -16,6 +21,22 @@ export default function GroceriesPage() {
         selectCategory,
         selectProduct,
     } = useGroceriesCatalog();
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const items = useAppSelector(state => state.cart.items);
+    const [quantity, setQuantity] = useState('1');
+    const category = categories.find(item => item.id === selectedCategoryId);
+    const product = category?.products.find(item => item.id === selectedProductId);
+    const combinedQuantity = (items.find(item => item.productId === selectedProductId)?.quantity ?? 0) + Number(quantity);
+    const validQuantity = isValidQuantity(Number(quantity)) && isValidQuantity(combinedQuantity);
+    const add = () => {
+        if (!category || !product || !validQuantity || isError) return;
+        dispatch(addItem({
+            productId: product.id, productName: product.name,
+            categoryId: category.id, categoryName: category.name, quantity: Number(quantity)
+        }));
+        setQuantity('1');
+    };
 
     return (
         <section>
@@ -54,7 +75,14 @@ export default function GroceriesPage() {
                 )}
 
                 <Cart/>
-                <Button variant="contained">
+                <TextField label="כמות" type="number" value={quantity}
+                           onChange={event => setQuantity(event.target.value)} error={!validQuantity}
+                           helperText={!validQuantity ? 'הכמות הכוללת למוצר חייבת להיות בין 1 ל־999' : undefined}
+                           slotProps={{htmlInput: {min: 1, max: 999, step: 1}}}/>
+                <Button variant="contained" disabled={!product || !validQuantity || isLoading || isError} onClick={add}>
+                    הוסף לעגלה
+                </Button>
+                <Button variant="contained" disabled={!items.length} onClick={() => navigate('/order-summary')}>
                     המשך הזמנה
                 </Button>
 

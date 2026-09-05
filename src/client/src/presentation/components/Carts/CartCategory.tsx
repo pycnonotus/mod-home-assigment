@@ -1,17 +1,13 @@
-﻿import {Stack, Typography} from "@mui/material";
-import {CartItem} from "./CartItem.tsx";
+import {Stack, Typography} from '@mui/material';
+import type {ProductId} from '../../../domain/catalog';
+import type {CartItem as Item} from '../../../domain/order/cart.ts';
+import {CartItem} from './CartItem.tsx';
 
-export function CartCategory(props: { items: { name: string; quantity: number }[], name?: string }) {
-    return (
-        <Stack>
-            <Typography>{props.name}</Typography>
-            <ul>
-                {
-                    props.items.map((item) => (
-                        <CartItem key={item.name} item={item} />
-                    ))
-                }
-            </ul>
-        </Stack>
-    );
+export function CartCategory({items, name, onRemove}: {
+    items: readonly Item[]; name: string; onRemove?: (id: ProductId) => void;
+}) {
+    return <Stack>
+        <Typography>{name}</Typography>
+        <ul>{items.map(item => <CartItem key={item.productId} item={item} onRemove={onRemove}/>)}</ul>
+    </Stack>;
 }

@@ -11,6 +11,7 @@ export const emptyCatalog: Catalog = {categories: []};
 function byName<T extends { readonly name: string }>(a: T, b: T): number {
     return a.name.localeCompare(b.name);
 }
+
 export function createCatalog(categories: readonly Category[]): Catalog {
     const seen = new Set<CategoryId>();
     const unique: Category[] = [];

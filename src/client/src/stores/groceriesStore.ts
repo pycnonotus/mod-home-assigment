@@ -1,9 +1,11 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { catalogSelectionSlice } from "../application/catalog/catalogSelectionSlice.ts";
-import { GroceriesApi } from "../infrastructure/api/groceriesApi.ts";
+import {configureStore} from "@reduxjs/toolkit";
+import {catalogSelectionSlice} from "../application/catalog/catalogSelectionSlice.ts";
+import {GroceriesApi} from "../infrastructure/api/groceriesApi.ts";
+import {cartSlice} from '../application/order/cartSlice.ts';
 
 export const store = configureStore({
     reducer: {
+        [cartSlice.reducerPath]: cartSlice.reducer,
         [GroceriesApi.reducerPath]: GroceriesApi.reducer,
         [catalogSelectionSlice.reducerPath]: catalogSelectionSlice.reducer,
     },
