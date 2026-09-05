@@ -1,4 +1,5 @@
 import {type CartItem, isValidQuantity} from '../../domain/order/cart.ts';
+import {isValidEmail} from '../../domain/shared/validation.ts';
 
 export type CustomerDetails = { firstName: string; lastName: string; email: string };
 export type PlaceOrderCommand = {
@@ -22,8 +23,7 @@ export function buildOrder(details: CustomerDetails, items: readonly CartItem[])
         throw new Error('יש למלא שם פרטי');
     if(!lastName)
         throw new Error('יש למלא שם משפחה');
-    //TODO move to common
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
+    if(!isValidEmail(email))
         throw new Error('יש למלא כתובת מייל תקינה');
 
 

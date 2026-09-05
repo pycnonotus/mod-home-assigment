@@ -1,4 +1,5 @@
 import {InvalidCustomerError} from "../../application/errors/InvalidCustomerError";
+import {isValidEmail} from "../shared/validation";
 
 export class Customer {
     private constructor(
@@ -15,7 +16,7 @@ export class Customer {
         if (name.length < 2)
             throw new InvalidCustomerError("Invalid customer name");
 
-        if (!email.includes("@"))//todo change to regex check , maybe common lib?
+        if (!isValidEmail(email))
             throw new InvalidCustomerError("Invalid customer email");
 
         return new Customer(name, email);
