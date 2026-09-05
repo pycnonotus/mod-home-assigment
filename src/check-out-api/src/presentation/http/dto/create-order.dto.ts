@@ -21,7 +21,6 @@ export class OrderItemDto {
 export class CreateOrderDto {
     @IsUUID() orderId!: string;
     @IsString() @IsNotEmpty() fullName!: string;
-    @IsString() @IsNotEmpty() address!: string;
     @IsEmail() email!: string;
     @IsArray()
     @ArrayMinSize(1)

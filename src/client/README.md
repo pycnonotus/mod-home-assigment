@@ -1,5 +1,12 @@
 # React + TypeScript + Vite
 
+Checkout submits `POST /api/orders` and clears the cart only after the API confirms success.
+Failed requests keep the cart and customer details so the user can retry.
+
+During Vite development, orders are proxied to the Docker gateway at `http://localhost:8012`.
+Start the root Docker Compose stack first. If you change `HTTP_PORT`, update the orders target
+in `vite.config.ts` to match. Catalog requests continue to use `http://localhost:5004`.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:

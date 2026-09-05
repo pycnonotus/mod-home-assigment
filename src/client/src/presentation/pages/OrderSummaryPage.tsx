@@ -3,7 +3,8 @@ import {Alert, Button, Stack} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 import {Cart} from '../components/Carts/Cart.tsx';
 import {OrderSummaryForm} from '../components/Order/OrderSummaryForm.tsx';
-import {buildOrder, type CustomerDetails} from '../../application/order/buildOrder.ts';
+import {buildOrder, type CustomerDetails, type PlaceOrderCommand} from '../../application/order/buildOrder.ts';
+import {useCreateOrderMutation} from '../../infrastructure/api/ordersApi.ts';
 import {clearCart} from '../../application/order/cartSlice.ts';
 import {selectionCleared} from '../../application/catalog/catalogSelectionSlice.ts';
 import {useAppDispatch, useAppSelector} from '../../stores/hooks.ts';
@@ -16,7 +17,8 @@ export function OrderSummaryPage() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
 
-    const isLoading = true;
+    const [createOrder, {isLoading}] = useCreateOrderMutation();
+    const pendingOrder = useRef<PlaceOrderCommand | null>(null);
 
     const submit = async (event: FormEvent) => {
         event.preventDefault();
@@ -24,7 +26,15 @@ export function OrderSummaryPage() {
         submitting.current = true;
         setError('');
         try {
-            buildOrder(customer, items);
+            const order = buildOrder(customer, items);
+            const previous = pendingOrder.current;
+            // Reuse the ID after a lost response when the submitted contents are unchanged.
+            if (previous && previous.fullName === order.fullName && previous.email === order.email &&
+                JSON.stringify(previous.items) === JSON.stringify(order.items)) {
+                order.orderId = previous.orderId;
+            }
+            pendingOrder.current = order;
+            await createOrder(order).unwrap();
             dispatch(clearCart());
             dispatch(selectionCleared());
             setSuccess(true);
