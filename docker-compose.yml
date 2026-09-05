@@ -1,0 +1,4 @@
+name: mod-catalog
+
+include:
+  - ./src/grocerices-api/docker-compose.yml
