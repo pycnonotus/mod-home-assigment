@@ -1,3 +1,7 @@
 <Solution>
   <Project Path="Mod.Catalog.Api/Mod.Catalog.Api.csproj" />
+  <Project Path="Mod.Catalog.Application/Mod.Catalog.Application.csproj" />
+  <Project Path="Mod.Catalog.Domain/Mod.Catalog.Domain.csproj" />
+  <Project Path="Mod.Catalog.Infrastructure/Mod.Catalog.Infrastructure.csproj" />
+  <Project Path="Mod.Catalog.Tests/Mod.Catalog.Tests.csproj" />
 </Solution>

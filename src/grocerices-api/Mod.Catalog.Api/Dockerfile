@@ -8,6 +8,9 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Mod.Catalog.Api/Mod.Catalog.Api.csproj", "Mod.Catalog.Api/"]
+COPY ["Mod.Catalog.Application/Mod.Catalog.Application.csproj", "Mod.Catalog.Application/"]
+COPY ["Mod.Catalog.Domain/Mod.Catalog.Domain.csproj", "Mod.Catalog.Domain/"]
+COPY ["Mod.Catalog.Infrastructure/Mod.Catalog.Infrastructure.csproj", "Mod.Catalog.Infrastructure/"]
 RUN dotnet restore "Mod.Catalog.Api/Mod.Catalog.Api.csproj"
 COPY . .
 WORKDIR "/src/Mod.Catalog.Api"

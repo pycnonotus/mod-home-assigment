@@ -1,27 +1,56 @@
 using Microsoft.EntityFrameworkCore;
-using Mod.Catalog.Api.Application.Abstractions;
-using Mod.Catalog.Api.Application.Catalog;
-using Mod.Catalog.Api.Infrastructure.Persistence;
+using Mod.Catalog.Api.Contracts;
+using Mod.Catalog.Application.Abstractions;
+using Mod.Catalog.Application.Catalog;
+using Mod.Catalog.Application.Products;
+using Mod.Catalog.Infrastructure.Persistence;
 using Serilog;
 
-var b = WebApplication.CreateBuilder(args);
-var cs = b.Configuration.GetConnectionString("Catalog") ??
-         throw new InvalidOperationException("Catalog connection string missing");
-b.Services.AddDbContext<CatalogDbContext>(o =>
-    o.UseSqlServer(cs, sql => sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null)));
-b.Services.AddScoped<ICatalogReadRepository, EfCatalogReadRepository>();
-b.Services.AddScoped<GetCatalogQuery>();
-b.Services.AddHealthChecks().AddDbContextCheck<CatalogDbContext>();
-b.Services.AddOpenApi();
-var app = b.Build();
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSerilog((services, configuration) => configuration
+    .ReadFrom.Configuration(builder.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext()
+    .WriteTo.Console());
+
+var connectionString = builder.Configuration.GetConnectionString("Catalog") ??
+                       throw new InvalidOperationException("Catalog connection string missing.");
+builder.Services.AddDbContext<CatalogDbContext>(options => options.UseSqlServer(connectionString,
+    sql => sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null)));
+builder.Services.AddScoped<ICatalogReadRepository, EfCatalogReadRepository>();
+builder.Services.AddScoped<GetCatalogQuery>();
+builder.Services.AddScoped<ValidateProductsQuery>();
+builder.Services.AddHealthChecks().AddDbContextCheck<CatalogDbContext>();
+builder.Services.AddOpenApi();
+builder.Services.AddProblemDetails();
+
+var app = builder.Build();
+app.UseExceptionHandler();
 app.UseSerilogRequestLogging();
 app.MapOpenApi();
 app.MapHealthChecks("/health");
-app.MapGet("/groceries", async (GetCatalogQuery q, CancellationToken ct) => Results.Ok(await q.ExecuteAsync(ct)));
-
-using (var scope = app.Services.CreateScope())
+app.MapGet("/groceries", async (GetCatalogQuery query, CancellationToken ct) =>
+    Results.Ok(await query.ExecuteAsync(ct)));
+app.MapGet("/api/catalog", async (GetCatalogQuery query, CancellationToken ct) =>
+    Results.Ok(await query.ExecuteAsync(ct)));
+app.MapPost("/api/catalog/products/validate", async (
+    ValidateProductsRequest request, ValidateProductsQuery query, CancellationToken ct) =>
 {
-    await CatalogSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<CatalogDbContext>());
+    if (request.ProductIds is null || request.ProductIds.Any(id => id == Guid.Empty))
+    {
+        return Results.ValidationProblem(new Dictionary<string, string[]>
+        {
+            ["productIds"] = ["Provide an array of non-empty product IDs."]
+        });
+    }
+
+    return Results.Ok(await query.ExecuteAsync(request.ProductIds, ct));
+});
+
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    await CatalogSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<CatalogDbContext>(),
+        app.Lifetime.ApplicationStopping);
 }
 
 app.Run();
