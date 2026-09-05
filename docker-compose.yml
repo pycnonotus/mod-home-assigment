@@ -2,6 +2,7 @@ name: mod-catalog
 
 include:
   - ./src/grocerices-api/docker-compose.yml
+  - ./src/check-out-api/docker-compose.yml
 
 services:
   caddy:
@@ -14,6 +15,8 @@ services:
       frontend:
         condition: service_started
       catalog-api:
+        condition: service_healthy
+      ordering-api:
         condition: service_healthy
     restart: unless-stopped
 

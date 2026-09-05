@@ -13,7 +13,7 @@ to run this project simaply do:
 
 docker compose up --build -d
 
-Then open http://localhost. Copy `.env.example` to `.env` and set `SA_PASSWORD` before starting. Set `HTTP_PORT` in `.env` if port 80 is already in use (for example, `HTTP_PORT=8080`). Caddy routes API requests to the catalog service and all other requests to the frontend, which supports client-side routing. Run `docker compose down` to stop the stack.
+Then open http://localhost:8012 (or your configured `HTTP_PORT`). Copy `.env.example` to `.env` and set `SA_PASSWORD` and `ELASTIC_PASSWORD` before starting. Caddy routes `/api/orders` requests to the separate NestJS ordering service, catalog requests to the catalog service, and other requests to the frontend. Run `docker compose down` to stop the stack. See [ordering API setup and endpoints](src/check-out-api/README.md).
 
 in adation this project is temporeail hosted: mod-<random>.aram-ski.com;
 

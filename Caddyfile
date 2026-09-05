@@ -1,6 +1,11 @@
 :80 {
 	encode zstd gzip
 
+	@orders path /api/orders /api/orders/*
+	handle @orders {
+		reverse_proxy ordering-api:3000
+	}
+
 	# Map the existing frontend URL to the backend catalog endpoint.
 	rewrite /api/groceries /groceries
 	@api path /api /api/* /groceries /health

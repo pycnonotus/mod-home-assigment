@@ -12,7 +12,7 @@ export function OrderSummaryPage() {
     const items = useAppSelector(state => state.cart.items);
     const dispatch = useAppDispatch(), navigate = useNavigate();
     const submitting = useRef(false);
-    const [customer, setCustomer] = useState<CustomerDetails>({firstName: '', lastName: '', address: '', email: ''});
+    const [customer, setCustomer] = useState<CustomerDetails>({firstName: '', lastName: '', email: ''});
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
 
@@ -24,8 +24,7 @@ export function OrderSummaryPage() {
         submitting.current = true;
         setError('');
         try {
-            const command = buildOrder(customer, items);
-            // await placeOrder(command).unwrap();
+            buildOrder(customer, items);
             dispatch(clearCart());
             dispatch(selectionCleared());
             setSuccess(true);

@@ -1,0 +1,62 @@
+services:
+  ordering-api:
+    build:
+      context: .
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      CATALOG_BASE_URL: http://catalog-api:8080
+      REDIS_URL: redis://redis:6379
+      ELASTICSEARCH_NODE: http://elasticsearch:9200
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in the root .env}
+      ELASTICSEARCH_ORDERS_ALIAS: orders
+      PRODUCT_EXISTS_TTL_SECONDS: 300
+    expose:
+      - "3000"
+    depends_on:
+      catalog-api:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/health >/dev/null 2>&1 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  redis:
+    image: redis:8-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.1.3
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "true"
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in the root .env}
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -u \"elastic:$${ELASTIC_PASSWORD}\" 'http://localhost:9200/_cluster/health?wait_for_status=yellow' >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+
+volumes:
+  redis-data:
+  elastic-data:
+
