@@ -1,0 +1,14 @@
+:80 {
+	encode zstd gzip
+
+	# Map the existing frontend URL to the backend catalog endpoint.
+	rewrite /api/groceries /groceries
+	@api path /api /api/* /groceries /health
+	handle @api {
+		reverse_proxy catalog-api:8080
+	}
+
+	handle {
+		reverse_proxy frontend:80
+	}
+}

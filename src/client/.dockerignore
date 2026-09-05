@@ -1,0 +1,9 @@
+node_modules
+dist
+.git
+.idea
+.claude
+.junie
+.env
+.env.*
+npm-debug.log*
