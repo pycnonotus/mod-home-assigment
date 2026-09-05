@@ -2,7 +2,7 @@
 
 export function GroceriesItems() {
     return (
-        <FormControl>
+        <FormControl sx={{width: 200}}>
             <InputLabel>
                 בחר מוצר
             </InputLabel>

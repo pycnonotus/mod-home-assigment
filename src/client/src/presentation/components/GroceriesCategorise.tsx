@@ -2,7 +2,7 @@
 
 export function GroceriesCategorise() {
     return (
-        <FormControl>
+        <FormControl sx={{width: 200}}>
             <InputLabel>
                 בחר קטגוריה
             </InputLabel>

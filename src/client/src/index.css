@@ -1,0 +1,16 @@
+html, body{
+    margin: 0;
+}
+
+html{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+}
