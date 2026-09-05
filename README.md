@@ -8,9 +8,12 @@ HE | EN
 ```sh
 docker compose up --build -d
 ```
+the open
 http://localhost:8012
+
+
 בנוסף יש גרסת זמנית:
-https://modasigment.aram-ski.com;
+[https://modasigment.aram-ski.com;](https://modasigment.aramski.com/)
 
 # EN
 
@@ -27,7 +30,7 @@ docker compose up --build -d
 
 Then open http://localhost:8012 (or your configured `HTTP_PORT`).
 
-in adation this project is temporeail hosted: https://modasigment.aram-ski.com;
+in adation this project is temporeail hosted:[ https://modasigment.aram-ski.com;](https://modasigment.aramski.com/)
 
 
 
