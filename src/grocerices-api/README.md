@@ -10,7 +10,31 @@
 
 `ICatalogReadRepository` returns domain types. Application queries map them into results with primitive GUIDs and strings.
 
-## Run
+## Run with Docker
+
+From this directory, with Docker Desktop running Linux containers:
+
+```powershell
+Copy-Item .env.example .env
+# Set SA_PASSWORD in .env, then start the services.
+docker compose up --build -d --wait
+```
+
+Compose starts the catalog API and SQL Server. The API waits for SQL Server to be healthy, then applies migrations and seeds the catalog before serving requests. SQL Server data is stored in the persistent `sql-data` volume.
+
+Open `http://localhost:5004/groceries`, `http://localhost:5004/health`, or `http://localhost:5004/openapi/v1.json`. `CATALOG_API_PORT` in `.env` changes the host port. SQL Server is accessible to the API inside the Docker network.
+
+The React client can continue running through its existing Vite development command; its proxy already targets port 5004.
+
+```powershell
+docker compose ps
+docker compose logs -f catalog-api
+docker compose down
+```
+
+`docker compose down` preserves the database volume for the next start. Keep the same `SA_PASSWORD` when reusing it. Ordering and its dependencies will be added later.
+
+## Run locally
 
 Install the .NET 10 SDK and provide a SQL Server connection using `ConnectionStrings__Catalog` or local configuration. The default connection in `appsettings.json` uses Windows authentication against localhost.
 

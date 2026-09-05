@@ -1,8 +1,10 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
-EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
@@ -14,11 +16,10 @@ COPY ["Mod.Catalog.Infrastructure/Mod.Catalog.Infrastructure.csproj", "Mod.Catal
 RUN dotnet restore "Mod.Catalog.Api/Mod.Catalog.Api.csproj"
 COPY . .
 WORKDIR "/src/Mod.Catalog.Api"
-RUN dotnet build "./Mod.Catalog.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Mod.Catalog.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Mod.Catalog.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish --no-restore /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
