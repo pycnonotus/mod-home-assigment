@@ -8,6 +8,7 @@ HE | EN
 ```sh
 docker compose up --build -d
 ```
+http://localhost:8012
 בנוסף יש גרסת זמנית:
 https://modasigment.aram-ski.com;
 
